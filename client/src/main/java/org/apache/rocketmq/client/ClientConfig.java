@@ -79,11 +79,17 @@ public class ClientConfig {
      */
     protected boolean enableStreamRequestType = false;
 
+    /**
+     * 创建MQ ClientId
+     * @return ip@instanceName@unitName
+     */
     public String buildMQClientId() {
         StringBuilder sb = new StringBuilder();
+        //主机ip地址
         sb.append(this.getClientIP());
 
         sb.append("@");
+        //进程id号===这里 如果统一台无力服务器部署两个应该程序进程id不同，两个进程互不影响
         sb.append(this.getInstanceName());
         if (!UtilAll.isBlank(this.unitName)) {
             sb.append("@");
@@ -113,7 +119,9 @@ public class ClientConfig {
     public void setInstanceName(String instanceName) {
         this.instanceName = instanceName;
     }
-
+    /**
+     * 设置instance名为pid
+     */
     public void changeInstanceNameToPID() {
         if (this.instanceName.equals("DEFAULT")) {
             this.instanceName = UtilAll.getPid() + "#" + System.nanoTime();

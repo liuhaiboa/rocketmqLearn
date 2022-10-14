@@ -223,11 +223,13 @@ public class DefaultMQProducerImpl implements MQProducerInner {
                 this.checkConfig();
 
                 if (!this.defaultMQProducer.getProducerGroup().equals(MixAll.CLIENT_INNER_PRODUCER_GROUP)) {
+                    //这里改变生产者的InstanceName 为进程id
                     this.defaultMQProducer.changeInstanceNameToPID();
                 }
-
+                // 获取MQClient对象 创建MQClient实例，单例模式 整个jvm中只存在一个 MQClientManager实例。
                 this.mQClientFactory = MQClientManager.getInstance().getOrCreateMQClientInstance(this.defaultMQProducer, rpcHook);
-
+                // 注册Producer
+                //这个defaultMQProducer 就是DefaultMQProducer 调用api初始化的
                 boolean registerOK = mQClientFactory.registerProducer(this.defaultMQProducer.getProducerGroup(), this);
                 if (!registerOK) {
                     this.serviceState = ServiceState.CREATE_JUST;
@@ -238,6 +240,7 @@ public class DefaultMQProducerImpl implements MQProducerInner {
 
                 this.topicPublishInfoTable.put(this.defaultMQProducer.getCreateTopicKey(), new TopicPublishInfo());
 
+                //这里重要
                 if (startFactory) {
                     mQClientFactory.start();
                 }
