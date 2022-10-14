@@ -213,8 +213,11 @@ public class DefaultMQProducerImpl implements MQProducerInner {
     }
 
     public void start(final boolean startFactory) throws MQClientException {
+        //类的状态
         switch (this.serviceState) {
+            //刚刚启动
             case CREATE_JUST:
+                // 标记初始化失败，这个技巧不错
                 this.serviceState = ServiceState.START_FAILED;
 
                 this.checkConfig();
